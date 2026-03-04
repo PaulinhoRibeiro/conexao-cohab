@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTEGRAÇÃO COHAB - Sorteio de Ações</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* SEU CSS COMPLETO AQUI - (mantenha todo o estilo que você já tem) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f3ff 100%);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e6ff;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .actions-status {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-dot.available {
+            background: #27ae60;
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .status-dot.pending {
+            background: #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        .status-dot.completed {
+            background: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .round-info {
+            background: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #667eea;
+            border: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-round-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .next-round-btn:hover {
+            background: #219a52;
+        }
+
+        .next-round-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .teams-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .team-card {
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .team-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(145deg, #f0f3ff, #e6e9ff);
+        }
+
+        .team-card.completed-round {
+            border-color: #27ae60;
+            background: linear-gradient(145deg, #f0fff0, #e6ffe6);
+        }
+
+        .team-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .team-card .points {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .team-card .current-action {
+            font-size: 0.9em;
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 10px 0;
+        }
+
+        .team-card .round-completed-badge {
+            font-size: 0.9em;
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 10px 0;
+        }
+
+        .team-card button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            margin: 2px;
+        }
+
+        .team-card button:hover:not(:disabled) {
+            background: #5a67d8;
+        }
+
+        .team-card button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .team-card .view-btn {
+            background: #27ae60;
+        }
+
+        .team-card .view-btn:hover {
+            background: #219a52;
+        }
+
+        .action-display {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .draw-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .draw-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .draw-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .selected-action {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .selected-action h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .selected-action .action-name {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .selected-action .team-name {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .carousel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .action-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 30px 20px 20px;
+            text-align: center;
+        }
+
+        .action-label h3 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .action-label p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .action-status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9em;
+            z-index: 10;
+        }
+
+        .action-status-badge.available {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-status-badge.pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .action-status-badge.completed {
+            background: #667eea;
+            color: white;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-btn.next {
+            right: 20px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .indicator.pending {
+            background: #f39c12;
+        }
+
+        .indicator.completed {
+            background: #667eea;
+        }
+
+        .pending-section {
+            margin-top: 40px;
+            background: #fff3e0;
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid #f39c12;
+        }
+
+        .pending-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pending-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .pending-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pending-item .team-name {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .pending-item .action-name {
+            color: #333;
+        }
+
+        .pending-item .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pending-item .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .pending-item .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .pending-item .upload-label {
+            cursor: pointer;
+            color: #666;
+        }
+
+        .pending-item .preview-area {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pending-item .preview-area img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .pending-item .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pending-item .approve-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .pending-item .reject-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .history-section {
+            margin-top: 40px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .history-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #f0f3ff;
+        }
+
+        .history-item .team {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .history-item .action {
+            color: #333;
+        }
+
+        .history-item .status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .history-item .status.completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .history-item .status.pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .history-item .time {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content img {
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .reset-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #d32f2f;
+        }
+
+        .image-error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .no-actions-message {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f3ff 100%);
+            border-radius: 15px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .celebration-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.3em;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            background: #fee;
+            color: #c00;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ CONEXÃO COHAB ⚡</h1>
+        <p class="subtitle">Sorteio de Ações para as Equipes</p>
+
+        <!-- Barra de Status -->
+        <div class="status-bar">
+            <div class="actions-status">
+                <div class="status-item">
+                    <span class="status-dot available"></span>
+                    <span>Disponíveis: <span id="availableCount">12</span></span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot pending"></span>
+                    <span>Pendentes: <span id="pendingCount">0</span></span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot completed"></span>
+                    <span>Concluídas: <span id="completedCount">0</span></span>
+                </div>
+            </div>
+            <div class="round-info">
+                <span>Rodada <span id="currentRound">1</span></span>
+                <button class="next-round-btn" id="nextRoundBtn" disabled>▶ Próxima Rodada</button>
+            </div>
+        </div>
+
+        <!-- Loading e Error -->
+        <div id="loading" class="loading" style="display: none;">Carregando dados...</div>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <!-- Equipes -->
+        <div class="teams-section" id="teamsSection"></div>
+
+        <!-- Botão de Sorteio -->
+        <div class="action-display">
+            <button class="draw-btn" id="drawBtn" disabled>🎲 SORTEAR AÇÃO 🎲</button>
+            
+            <div id="selectedAction" class="selected-action" style="display: none;">
+                <h3>Ação Sorteada:</h3>
+                <div class="action-name" id="selectedActionName"></div>
+                <div class="team-name" id="selectedActionTeam"></div>
+            </div>
+        </div>
+
+        <!-- Carrossel de Ações -->
+        <div class="carousel-container">
+            <div class="carousel" id="carousel"></div>
+            <button class="carousel-btn prev" id="prevBtn">❮</button>
+            <button class="carousel-btn next" id="nextBtn">❯</button>
+        </div>
+        <div class="carousel-indicators" id="indicators"></div>
+
+        <!-- Ações Pendentes -->
+        <div class="pending-section">
+            <h3>⏳ Ações Pendentes de Comprovação</h3>
+            <div class="pending-list" id="pendingList"></div>
+        </div>
+
+        <!-- Histórico -->
+        <div class="history-section">
+            <h3>✅ Histórico de Ações Concluídas</h3>
+            <div class="history-list" id="historyList"></div>
+            <button class="reset-btn" id="resetBtn">🔄 Reiniciar Gincana</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO DO FIREBASE - COLE SEUS DADOS AQUI
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-...",
+            authDomain: "seu-projeto.firebaseapp.com",
+            projectId: "seu-projeto",
+            storageBucket: "seu-projeto.appspot.com",
+            messagingSenderId: "000000000000",
+            appId: "1:000000000000:web:abcdef123456"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // AÇÕES - SEUS 12 ITEMS
+        const actions = [
+            {
+                id: 1,
+                name: "Amando o pródigo",
+                description: "Visita um antigo membro da igreja que está afastado.",
+                image: "img/acao1.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 2,
+                name: "Ajuda urbana",
+                description: "Proporcionar uma refeição para necessitados.",
+                image: "img/acao2.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 3,
+                name: "Mãos que consolam",
+                description: "Dar atenção e carinho a alguém que esteja vulnerável.",
+                image: "img/acao3.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 4,
+                name: "Primavera Eterna",
+                description: "Promover uma ação para pessoas da melhor idade.",
+                image: "img/acao4.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 5,
+                name: "Projeto Naamã",
+                description: "Realizar atividades com pessoas doentes",
+                image: "img/acao5.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 6,
+                name: "Tons que curam",
+                description: "Realizar uma atividade musical pública.",
+                image: "img/acao6.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 7,
+                name: "Berço da Esperança",
+                description: "Realizar uma atividade de apoio para grávidas ou mães.",
+                image: "img/acao7.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 8,
+                name: "Gol de esperança",
+                description: "Realizar uma atividade esportiva para a comunidade.",
+                image: "img/acao8.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 9,
+                name: "Adote uma praça",
+                description: "Realizar uma ação social de limpeza de uma praça.",
+                image: "img/acao9.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 10,
+                name: "Mãos que servem.",
+                description: "Realizar atividades em uma casa que precise.",
+                image: "img/acao10.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 11,
+                name: "Brechó Solidário",
+                description: "Organizar uma ação de arrecadação e doação de roupas e acessórios.",
+                image: "img/acao11.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            },
+            {
+                id: 12,
+                name: "Estação da Paz",
+                description: "Realizar uma tenda com momentos de louvor e oração em uma praça pública",
+                image: "img/acao12.png",
+                status: 'available',
+                drawnBy: null,
+                completedInRound: null
+            }
+        ];
+
+        // EQUIPES
+        let teams = [
+            { id: 1, name: "Equipe Azul", points: 0, selected: false, currentActionId: null, completedThisRound: false },
+            { id: 2, name: "Equipe Vermelha", points: 0, selected: false, currentActionId: null, completedThisRound: false },
+            { id: 3, name: "Equipe Amarela", points: 0, selected: false, currentActionId: null, completedThisRound: false },
+            { id: 4, name: "Equipe Verde", points: 0, selected: false, currentActionId: null, completedThisRound: false }
+        ];
+
+        // ESTADO GLOBAL
+        let pendingActions = [];
+        let completedActions = [];
+        let currentIndex = 0;
+        let selectedTeamId = null;
+        let currentRound = 1;
+        let roundCompleted = false;
+
+        // ELEMENTOS DOM
+        const teamsSection = document.getElementById('teamsSection');
+        const carousel = document.getElementById('carousel');
+        const indicators = document.getElementById('indicators');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const drawBtn = document.getElementById('drawBtn');
+        const selectedAction = document.getElementById('selectedAction');
+        const selectedActionName = document.getElementById('selectedActionName');
+        const selectedActionTeam = document.getElementById('selectedActionTeam');
+        const pendingList = document.getElementById('pendingList');
+        const historyList = document.getElementById('historyList');
+        const resetBtn = document.getElementById('resetBtn');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modalContent');
+        const availableCount = document.getElementById('availableCount');
+        const pendingCount = document.getElementById('pendingCount');
+        const completedCount = document.getElementById('completedCount');
+        const currentRoundSpan = document.getElementById('currentRound');
+        const nextRoundBtn = document.getElementById('nextRoundBtn');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('errorMessage');
+
+        // ========== FUNÇÕES DO FIREBASE ==========
+        async function saveAllData() {
+            try {
+                await db.collection('gincana').doc('estado').set({
+                    teams: JSON.stringify(teams),
+                    pendingActions: JSON.stringify(pendingActions),
+                    completedActions: JSON.stringify(completedActions),
+                    currentRound: currentRound,
+                    roundCompleted: roundCompleted,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showError('Erro ao salvar dados. Verifique sua conexão.');
+            }
+        }
+
+        async function loadData() {
+            showLoading(true);
+            try {
+                const doc = await db.collection('gincana').doc('estado').get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    teams = JSON.parse(data.teams);
+                    pendingActions = JSON.parse(data.pendingActions);
+                    completedActions = JSON.parse(data.completedActions);
+                    currentRound = data.currentRound;
+                    roundCompleted = data.roundCompleted;
+                    
+                    currentRoundSpan.textContent = currentRound;
+                    nextRoundBtn.disabled = !roundCompleted;
+                    
+                    if (roundCompleted) {
+                        const celebrationDiv = document.createElement('div');
+                        celebrationDiv.className = 'celebration-message';
+                        celebrationDiv.id = 'celebrationMessage';
+                        celebrationDiv.innerHTML = '🎉 Parabéns! Todas as equipes concluíram a rodada! Clique em "Próxima Rodada" para continuar. 🎉';
+                        document.querySelector('.carousel-container').insertAdjacentElement('afterend', celebrationDiv);
+                    }
+                }
+
+                renderAll();
+            } catch (error) {
+                console.error('Erro ao carregar:', error);
+                showError('Erro ao carregar dados. Atualize a página.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ========== FUNÇÕES AUXILIARES ==========
+        function showLoading(show) {
+            loadingEl.style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => errorEl.style.display = 'none', 5000);
+        }
+
+        function updateDrawButton() {
+            const available = actions.filter(a => a.status === 'available').length;
+            drawBtn.disabled = !selectedTeamId || available === 0;
+        }
+
+        function updateCounters() {
+            availableCount.textContent = actions.filter(a => a.status === 'available').length;
+            pendingCount.textContent = pendingActions.length;
+            completedCount.textContent = completedActions.length;
+        }
+
+        function checkRoundCompletion() {
+            const allTeamsCompleted = teams.every(team => team.completedThisRound);
+            
+            if (allTeamsCompleted && !roundCompleted) {
+                roundCompleted = true;
+                
+                const celebrationDiv = document.createElement('div');
+                celebrationDiv.className = 'celebration-message';
+                celebrationDiv.id = 'celebrationMessage';
+                celebrationDiv.innerHTML = '🎉 Parabéns! Todas as equipes concluíram a rodada! Clique em "Próxima Rodada" para continuar. 🎉';
+                
+                document.querySelector('.carousel-container').insertAdjacentElement('afterend', celebrationDiv);
+                nextRoundBtn.disabled = false;
+                saveAllData();
+            }
+        }
+
+        function handleImageError(img, actionName) {
+            img.onerror = null;
+            img.src = 'https://via.placeholder.com/800x400?text=' + encodeURIComponent(actionName);
+        }
+
+        // ========== FUNÇÕES DE RENDERIZAÇÃO ==========
+        function renderAll() {
+            renderTeams();
+            renderCarousel();
+            renderPendingActions();
+            renderHistory();
+            updateCounters();
+            updateDrawButton();
+        }
+
+        function renderTeams() {
+            teamsSection.innerHTML = '';
+            teams.forEach(team => {
+                const pendingCount = pendingActions.filter(p => p.teamId === team.id).length;
+                const currentAction = actions.find(a => a.id === team.currentActionId);
+                
+                const card = document.createElement('div');
+                card.className = `team-card ${team.selected ? 'selected' : ''} ${team.completedThisRound ? 'completed-round' : ''}`;
+                
+                let actionHtml = '';
+                if (team.completedThisRound) {
+                    actionHtml = `<div class="round-completed-badge">✅ Rodada Concluída</div>`;
+                } else if (currentAction) {
+                    actionHtml = `<div class="current-action">🎯 Ação: ${currentAction.name}</div>`;
+                }
+                
+                card.innerHTML = `
+                    <h3>${team.name}</h3>
+                    <div class="points">${team.points} pts</div>
+                    ${actionHtml}
+                    ${pendingCount > 0 ? `<div class="pending-actions">⏳ ${pendingCount} pendente(s)</div>` : ''}
+                    <button onclick="window.selectTeam(${team.id})" ${team.selected || team.currentActionId || team.completedThisRound ? 'disabled' : ''}>
+                        ${team.selected ? 'Selecionado' : 'Selecionar'}
+                    </button>
+                    ${pendingCount > 0 ? `<button class="view-btn" onclick="window.viewTeamPending(${team.id})">📸 Ver</button>` : ''}
+                `;
+                teamsSection.appendChild(card);
+            });
+        }
+
+        function renderCarousel() {
+            carousel.innerHTML = '';
+            actions.forEach((action, index) => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                
+                const img = document.createElement('img');
+                img.src = action.image;
+                img.alt = action.name;
+                img.onerror = function() { handleImageError(this, action.name); };
+                
+                const label = document.createElement('div');
+                label.className = 'action-label';
+                label.innerHTML = `<h3>${action.name}</h3><p>${action.description}</p>`;
+                
+                const badge = document.createElement('div');
+                badge.className = `action-status-badge ${action.status}`;
+                badge.textContent = action.status === 'available' ? 'Disponível' :
+                                   action.status === 'pending' ? 'Pendente' : 'Concluída';
+                
+                item.appendChild(img);
+                item.appendChild(label);
+                item.appendChild(badge);
+                carousel.appendChild(item);
+            });
+
+            indicators.innerHTML = '';
+            actions.forEach((action, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `indicator ${index === currentIndex ? 'active' : ''} ${action.status}`;
+                indicator.onclick = () => goToSlide(index);
+                indicators.appendChild(indicator);
+            });
+
+            updateCarouselPosition();
+        }
+
+        function updateCarouselPosition() {
+            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            document.querySelectorAll('.indicator').forEach((ind, index) => {
+                ind.className = `indicator ${index === currentIndex ? 'active' : ''} ${actions[index].status}`;
+            });
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            updateCarouselPosition();
+        }
+
+        function renderPendingActions() {
+            pendingList.innerHTML = '';
+            if (pendingActions.length === 0) {
+                pendingList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação pendente.</p>';
+                return;
+            }
+
+            pendingActions.forEach(pending => {
+                const item = document.createElement('div');
+                item.className = 'pending-item';
+                item.innerHTML = `
+                    <div>
+                        <span class="team-name">${pending.teamName}</span>
+                        <div class="action-name">${pending.actionName}</div>
+                        <small>Sorteado: ${pending.drawTime}</small>
+                    </div>
+                    <div class="upload-area" onclick="document.getElementById('file-${pending.id}').click()">
+                        <input type="file" id="file-${pending.id}" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(${pending.id}, this.files)">
+                        <div class="upload-label">📸 Adicionar fotos</div>
+                    </div>
+                    <div class="preview-area" id="preview-${pending.id}"></div>
+                    <div class="action-buttons">
+                        <button class="approve-btn" onclick="approveAction(${pending.id})">✅ Aprovar</button>
+                        <button class="reject-btn" onclick="rejectAction(${pending.id})">❌ Rejeitar</button>
+                    </div>
+                `;
+                pendingList.appendChild(item);
+            });
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            if (completedActions.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação concluída.</p>';
+                return;
+            }
+
+            completedActions.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <span class="team">${item.teamName}</span>
+                    <span class="action">${item.actionName}</span>
+                    <span class="status completed">Concluída</span>
+                    <span class="time">Rodada ${item.round}</span>
+                `;
+                historyItem.onclick = () => viewCompletedDetails(item);
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // ========== FUNÇÕES DE INTERAÇÃO ==========
+        window.selectTeam = function(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            
+            if (team.currentActionId) {
+                alert(`${team.name} já tem uma ação!`);
+                return;
+            }
+            if (team.completedThisRound) {
+                alert(`${team.name} já concluiu a rodada!`);
+                return;
+            }
+            
+            if (selectedTeamId === teamId) {
+                selectedTeamId = null;
+                teams = teams.map(t => ({ ...t, selected: false }));
+                drawBtn.disabled = true;
+            } else {
+                selectedTeamId = teamId;
+                teams = teams.map(t => ({ ...t, selected: t.id === teamId }));
+                const available = actions.filter(a => a.status === 'available').length;
+                drawBtn.disabled = available === 0;
+            }
+            
+            renderTeams();
+        };
+
+        window.drawAction = async function() {
+            if (!selectedTeamId) {
+                alert('Selecione uma equipe!');
+                return;
+            }
+
+            const team = teams.find(t => t.id === selectedTeamId);
+            if (team.currentActionId || team.completedThisRound) {
+                alert('Equipe não disponível para sorteio!');
+                return;
+            }
+
+            const available = actions.filter(a => a.status === 'available');
+            if (available.length === 0) {
+                alert('Não há ações disponíveis!');
+                return;
+            }
+
+            const drawnAction = available[Math.floor(Math.random() * available.length)];
+            
+            drawnAction.status = 'pending';
+            drawnAction.drawnBy = team.id;
+            team.currentActionId = drawnAction.id;
+            team.selected = false;
+            selectedTeamId = null;
+
+            const pendingAction = {
+                id: Date.now(),
+                teamId: team.id,
+                teamName: team.name,
+                actionId: drawnAction.id,
+                actionName: drawnAction.name,
+                actionDescription: drawnAction.description,
+                drawTime: new Date().toLocaleString(),
+                photos: [],
+                status: 'pending'
+            };
+            pendingActions.push(pendingAction);
+
+            selectedActionName.textContent = drawnAction.name;
+            selectedActionTeam.textContent = `Equipe: ${team.name}`;
+            selectedAction.style.display = 'block';
+
+            renderAll();
+            goToSlide(actions.findIndex(a => a.id === drawnAction.id));
+            await saveAllData();
+        };
+
+        window.handleFileUpload = function(pendingId, files) {
+            const pending = pendingActions.find(p => p.id === pendingId);
+            if (!pending) return;
+
+            const previewArea = document.getElementById(`preview-${pendingId}`);
+            previewArea.style.display = 'grid';
+            previewArea.innerHTML = '';
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    previewArea.appendChild(img);
+                    pending.photos.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        window.approveAction = async function(pendingId) {
+            const index = pendingActions.findIndex(p => p.id === pendingId);
+            if (index === -1) return;
+
+            const pending = pendingActions[index];
+            const team = teams.find(t => t.id === pending.teamId);
+            const action = actions.find(a => a.id === pending.actionId);
+
+            team.points += 10;
+            team.completedThisRound = true;
+            team.currentActionId = null;
+            
+            action.status = 'completed';
+            action.completedInRound = currentRound;
+
+            const completed = {
+                ...pending,
+                completionTime: new Date().toLocaleString(),
+                status: 'completed',
+                round: currentRound
+            };
+            completedActions.unshift(completed);
+            pendingActions.splice(index, 1);
+
+            renderAll();
+            checkRoundCompletion();
+            await saveAllData();
+        };
+
+        window.rejectAction = async function(pendingId) {
+            if (!confirm('Rejeitar esta ação? Ela voltará para disponível.')) return;
+
+            const index = pendingActions.findIndex(p => p.id === pendingId);
+            if (index === -1) return;
+
+            const pending = pendingActions[index];
+            const team = teams.find(t => t.id === pending.teamId);
+            const action = actions.find(a => a.id === pending.actionId);
+
+            action.status = 'available';
+            action.drawnBy = null;
+            team.currentActionId = null;
+            pendingActions.splice(index, 1);
+
+            renderAll();
+            await saveAllData();
+        };
+
+        window.viewTeamPending = function(teamId) {
+            const teamPending = pendingActions.filter(p => p.teamId === teamId);
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom:20px;">Pendentes - ${teams.find(t => t.id === teamId).name}</h3>
+                ${teamPending.map(p => `
+                    <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                        <h4>${p.actionName}</h4>
+                        <p>Sorteado: ${p.drawTime}</p>
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+                            ${p.photos.map(photo => `<img src="${photo}" style="width:100%;">`).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+                <button onclick="closeModal()" style="background:#667eea;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">Fechar</button>
+            `;
+            modal.style.display = 'flex';
+        };
+
+        window.closeModal = function() {
+            modal.style.display = 'none';
+        };
+
+        function viewCompletedDetails(item) {
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom:20px;">Detalhes da Ação Concluída</h3>
+                <p><strong>Equipe:</strong> ${item.teamName}</p>
+                <p><strong>Ação:</strong> ${item.actionName}</p>
+                <p><strong>Descrição:</strong> ${item.actionDescription}</p>
+                <p><strong>Sorteada:</strong> ${item.drawTime}</p>
+                <p><strong>Concluída:</strong> ${item.completionTime}</p>
+                <p><strong>Rodada:</strong> ${item.round}</p>
+                <h4 style="margin:15px 0 10px;">Comprovantes:</h4>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+                    ${item.photos.map(photo => `<img src="${photo}" style="width:100%;">`).join('')}
+                </div>
+                <button onclick="closeModal()" style="background:#667eea;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin-top:20px;">Fechar</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        window.nextRound = async function() {
+            if (!roundCompleted) {
+                alert('Ainda nem todas as equipes concluíram!');
+                return;
+            }
+
+            document.getElementById('celebrationMessage')?.remove();
+            
+            currentRound++;
+            currentRoundSpan.textContent = currentRound;
+            roundCompleted = false;
+            nextRoundBtn.disabled = true;
+
+            teams.forEach(t => {
+                t.currentActionId = null;
+                t.completedThisRound = false;
+                t.selected = false;
+            });
+
+            actions.forEach(a => {
+                a.status = 'available';
+                a.drawnBy = null;
+            });
+
+            pendingActions = [];
+            selectedTeamId = null;
+            selectedAction.style.display = 'none';
+
+            renderAll();
+            goToSlide(0);
+            await saveAllData();
+        };
+
+        window.resetGame = async function() {
+            if (!confirm('Reiniciar gincana? Todo progresso será perdido.')) return;
+
+            actions.forEach(a => {
+                a.status = 'available';
+                a.drawnBy = null;
+                a.completedInRound = null;
+            });
+
+            teams = teams.map(t => ({
+                ...t,
+                points: 0,
+                selected: false,
+                currentActionId: null,
+                completedThisRound: false
+            }));
+
+            pendingActions = [];
+            completedActions = [];
+            selectedTeamId = null;
+            currentRound = 1;
+            roundCompleted = false;
+            selectedAction.style.display = 'none';
+            nextRoundBtn.disabled = true;
+            currentRoundSpan.textContent = '1';
+
+            document.getElementById('celebrationMessage')?.remove();
+
+            renderAll();
+            goToSlide(0);
+            await saveAllData();
+        };
+
+        // ========== EVENT LISTENERS ==========
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + actions.length) % actions.length;
+            updateCarouselPosition();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % actions.length;
+            updateCarouselPosition();
+        });
+
+        drawBtn.addEventListener('click', drawAction);
+        resetBtn.addEventListener('click', resetGame);
+        nextRoundBtn.addEventListener('click', nextRound);
+
+        window.onclick = (event) => {
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + actions.length) % actions.length;
+                updateCarouselPosition();
+            } else if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % actions.length;
+                updateCarouselPosition();
+            }
+        });
+
+        // ========== INICIALIZAÇÃO ==========
+        loadData();
+    </script>
+</body>
+</html>
