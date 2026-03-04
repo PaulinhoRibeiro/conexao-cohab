@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INTEGRAÇÃO COHAB - Sorteio de Ações</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        /* SEU CSS COMPLETO AQUI - (mantenha todo o estilo que você já tem) */
         * {
             margin: 0;
             padding: 0;
@@ -45,6 +41,56 @@
             font-size: 1.2em;
         }
 
+        /* Navegação por abas */
+        .tabs-container {
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e0e6ff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px 10px 0 0;
+            color: #667eea;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Barra de Status */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -124,6 +170,182 @@
             cursor: not-allowed;
         }
 
+        /* Seção de Membros */
+        .members-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .team-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .team-tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .team-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .team-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .team-tab .member-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            font-size: 0.8em;
+        }
+
+        .team-members {
+            display: none;
+        }
+
+        .team-members.active {
+            display: block;
+        }
+
+        .add-member-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 2px solid #e0e6ff;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-member-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: fit-content;
+        }
+
+        .add-member-btn:hover {
+            background: #219a52;
+        }
+
+        .members-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e6ff;
+            transition: background 0.3s ease;
+        }
+
+        .member-item:hover {
+            background: #f8f9ff;
+        }
+
+        .member-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #333;
+            min-width: 150px;
+        }
+
+        .member-phone {
+            color: #666;
+            min-width: 120px;
+        }
+
+        .member-role {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .remove-member-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .remove-member-btn:hover {
+            background: #c0392b;
+        }
+
+        .no-members {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Teams Section (original) */
         .teams-section {
             display: flex;
             justify-content: center;
@@ -170,6 +392,12 @@
             font-weight: bold;
             color: #667eea;
             margin: 10px 0;
+        }
+
+        .team-card .member-count {
+            font-size: 0.9em;
+            color: #f39c12;
+            margin-bottom: 10px;
         }
 
         .team-card .current-action {
@@ -652,22 +880,6 @@
             animation: pulse 2s infinite;
         }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2em;
-            color: #667eea;
-        }
-
-        .error-message {
-            text-align: center;
-            padding: 20px;
-            background: #fee;
-            color: #c00;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -686,65 +898,125 @@
         <h1>⚡ CONEXÃO COHAB ⚡</h1>
         <p class="subtitle">Sorteio de Ações para as Equipes</p>
 
-        <!-- Barra de Status -->
-        <div class="status-bar">
-            <div class="actions-status">
-                <div class="status-item">
-                    <span class="status-dot available"></span>
-                    <span>Disponíveis: <span id="availableCount">12</span></span>
+        <!-- Navegação por Abas -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('gincana')">🎮 Gincana</button>
+                <button class="tab-btn" onclick="showTab('membros')">👥 Membros das Equipes</button>
+            </div>
+
+            <!-- Aba da Gincana -->
+            <div id="tab-gincana" class="tab-content active">
+                <!-- Barra de Status -->
+                <div class="status-bar">
+                    <div class="actions-status">
+                        <div class="status-item">
+                            <span class="status-dot available"></span>
+                            <span>Disponíveis: <span id="availableCount">12</span></span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-dot pending"></span>
+                            <span>Pendentes: <span id="pendingCount">0</span></span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-dot completed"></span>
+                            <span>Concluídas: <span id="completedCount">0</span></span>
+                        </div>
+                    </div>
+                    <div class="round-info">
+                        <span>Rodada <span id="currentRound">1</span></span>
+                        <button class="next-round-btn" id="nextRoundBtn" disabled>▶ Próxima Rodada</button>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-dot pending"></span>
-                    <span>Pendentes: <span id="pendingCount">0</span></span>
+
+                <!-- Equipes -->
+                <div class="teams-section" id="teamsSection"></div>
+
+                <!-- Botão de Sorteio -->
+                <div class="action-display">
+                    <button class="draw-btn" id="drawBtn" disabled>🎲 SORTEAR AÇÃO 🎲</button>
+                    
+                    <div id="selectedAction" class="selected-action" style="display: none;">
+                        <h3>Ação Sorteada:</h3>
+                        <div class="action-name" id="selectedActionName"></div>
+                        <div class="team-name" id="selectedActionTeam"></div>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-dot completed"></span>
-                    <span>Concluídas: <span id="completedCount">0</span></span>
+
+                <!-- Carrossel de Ações -->
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel"></div>
+                    <button class="carousel-btn prev" id="prevBtn">❮</button>
+                    <button class="carousel-btn next" id="nextBtn">❯</button>
+                </div>
+                
+                <div class="carousel-indicators" id="indicators"></div>
+
+                <!-- Ações Pendentes -->
+                <div class="pending-section">
+                    <h3>⏳ Ações Pendentes de Comprovação</h3>
+                    <div class="pending-list" id="pendingList"></div>
+                </div>
+
+                <!-- Histórico -->
+                <div class="history-section">
+                    <h3>✅ Histórico de Ações Concluídas</h3>
+                    <div class="history-list" id="historyList"></div>
+                    <button class="reset-btn" id="resetBtn">🔄 Reiniciar Gincana</button>
                 </div>
             </div>
-            <div class="round-info">
-                <span>Rodada <span id="currentRound">1</span></span>
-                <button class="next-round-btn" id="nextRoundBtn" disabled>▶ Próxima Rodada</button>
+
+            <!-- Aba de Membros -->
+            <div id="tab-membros" class="tab-content">
+                <div class="members-section">
+                    <h2 style="margin-bottom: 20px; color: #333;">👥 Membros das Equipes</h2>
+                    
+                    <!-- Abas das Equipes -->
+                    <div class="team-tabs" id="teamTabs">
+                        <button class="team-tab active" onclick="showTeam('azul')">Equipe Azul <span class="member-count" id="countAzul">0</span></button>
+                        <button class="team-tab" onclick="showTeam('vermelha')">Equipe Vermelha <span class="member-count" id="countVermelha">0</span></button>
+                        <button class="team-tab" onclick="showTeam('amarela')">Equipe Amarela <span class="member-count" id="countAmarela">0</span></button>
+                        <button class="team-tab" onclick="showTeam('verde')">Equipe Verde <span class="member-count" id="countVerde">0</span></button>
+                    </div>
+
+                    <!-- Formulário para Adicionar Membro -->
+                    <div class="add-member-form">
+                        <div class="form-group">
+                            <label>Nome do Membro:</label>
+                            <input type="text" id="memberName" placeholder="Ex: João Silva">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone:</label>
+                            <input type="tel" id="memberPhone" placeholder="(84) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label>Função:</label>
+                            <select id="memberRole">
+                                <option value="Líder">Líder</option>
+                                <option value="Vice-líder">Vice-líder</option>
+                                <option value="Membro">Membro</option>
+                                <option value="Fotógrafo">Fotógrafo</option>
+                                <option value="Motorista">Motorista</option>
+                            </select>
+                        </div>
+                        <button class="add-member-btn" onclick="addMember()">➕ Adicionar Membro</button>
+                    </div>
+
+                    <!-- Listas de Membros por Equipe -->
+                    <div id="team-azul" class="team-members active">
+                        <div class="members-list" id="membersAzul"></div>
+                    </div>
+                    <div id="team-vermelha" class="team-members">
+                        <div class="members-list" id="membersVermelha"></div>
+                    </div>
+                    <div id="team-amarela" class="team-members">
+                        <div class="members-list" id="membersAmarela"></div>
+                    </div>
+                    <div id="team-verde" class="team-members">
+                        <div class="members-list" id="membersVerde"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <!-- Loading e Error -->
-        <div id="loading" class="loading" style="display: none;">Carregando dados...</div>
-        <div id="errorMessage" class="error-message" style="display: none;"></div>
-
-        <!-- Equipes -->
-        <div class="teams-section" id="teamsSection"></div>
-
-        <!-- Botão de Sorteio -->
-        <div class="action-display">
-            <button class="draw-btn" id="drawBtn" disabled>🎲 SORTEAR AÇÃO 🎲</button>
-            
-            <div id="selectedAction" class="selected-action" style="display: none;">
-                <h3>Ação Sorteada:</h3>
-                <div class="action-name" id="selectedActionName"></div>
-                <div class="team-name" id="selectedActionTeam"></div>
-            </div>
-        </div>
-
-        <!-- Carrossel de Ações -->
-        <div class="carousel-container">
-            <div class="carousel" id="carousel"></div>
-            <button class="carousel-btn prev" id="prevBtn">❮</button>
-            <button class="carousel-btn next" id="nextBtn">❯</button>
-        </div>
-        <div class="carousel-indicators" id="indicators"></div>
-
-        <!-- Ações Pendentes -->
-        <div class="pending-section">
-            <h3>⏳ Ações Pendentes de Comprovação</h3>
-            <div class="pending-list" id="pendingList"></div>
-        </div>
-
-        <!-- Histórico -->
-        <div class="history-section">
-            <h3>✅ Histórico de Ações Concluídas</h3>
-            <div class="history-list" id="historyList"></div>
-            <button class="reset-btn" id="resetBtn">🔄 Reiniciar Gincana</button>
         </div>
     </div>
 
@@ -754,21 +1026,7 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO FIREBASE - COLE SEUS DADOS AQUI
-        const firebaseConfig = {
-            apiKey: "AIzaSyA-...",
-            authDomain: "seu-projeto.firebaseapp.com",
-            projectId: "seu-projeto",
-            storageBucket: "seu-projeto.appspot.com",
-            messagingSenderId: "000000000000",
-            appId: "1:000000000000:web:abcdef123456"
-        };
-
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // AÇÕES - SEUS 12 ITEMS
+        // Dados das ações
         const actions = [
             {
                 id: 1,
@@ -880,23 +1138,26 @@
             }
         ];
 
-        // EQUIPES
+        // Dados das equipes com membros
         let teams = [
-            { id: 1, name: "Equipe Azul", points: 0, selected: false, currentActionId: null, completedThisRound: false },
-            { id: 2, name: "Equipe Vermelha", points: 0, selected: false, currentActionId: null, completedThisRound: false },
-            { id: 3, name: "Equipe Amarela", points: 0, selected: false, currentActionId: null, completedThisRound: false },
-            { id: 4, name: "Equipe Verde", points: 0, selected: false, currentActionId: null, completedThisRound: false }
+            { id: 1, name: "Equipe Azul", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
+            { id: 2, name: "Equipe Vermelha", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
+            { id: 3, name: "Equipe Amarela", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
+            { id: 4, name: "Equipe Verde", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] }
         ];
 
-        // ESTADO GLOBAL
+        // Ações pendentes
         let pendingActions = [];
+        
+        // Histórico de ações concluídas
         let completedActions = [];
+
         let currentIndex = 0;
         let selectedTeamId = null;
         let currentRound = 1;
         let roundCompleted = false;
 
-        // ELEMENTOS DOM
+        // Elementos DOM
         const teamsSection = document.getElementById('teamsSection');
         const carousel = document.getElementById('carousel');
         const indicators = document.getElementById('indicators');
@@ -916,82 +1177,125 @@
         const completedCount = document.getElementById('completedCount');
         const currentRoundSpan = document.getElementById('currentRound');
         const nextRoundBtn = document.getElementById('nextRoundBtn');
-        const loadingEl = document.getElementById('loading');
-        const errorEl = document.getElementById('errorMessage');
 
-        // ========== FUNÇÕES DO FIREBASE ==========
-        async function saveAllData() {
-            try {
-                await db.collection('gincana').doc('estado').set({
-                    teams: JSON.stringify(teams),
-                    pendingActions: JSON.stringify(pendingActions),
-                    completedActions: JSON.stringify(completedActions),
-                    currentRound: currentRound,
-                    roundCompleted: roundCompleted,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Erro ao salvar:', error);
-                showError('Erro ao salvar dados. Verifique sua conexão.');
+        // Elementos dos membros
+        const countAzul = document.getElementById('countAzul');
+        const countVermelha = document.getElementById('countVermelha');
+        const countAmarela = document.getElementById('countAmarela');
+        const countVerde = document.getElementById('countVerde');
+        const membersAzul = document.getElementById('membersAzul');
+        const membersVermelha = document.getElementById('membersVermelha');
+        const membersAmarela = document.getElementById('membersAmarela');
+        const membersVerde = document.getElementById('membersVerde');
+
+        // Função para alternar abas principais
+        window.showTab = function(tabName) {
+            // Atualizar botões
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Atualizar conteúdo
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        };
+
+        // Função para alternar entre equipes na aba de membros
+        window.showTeam = function(team) {
+            document.querySelectorAll('.team-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.team-members').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`team-${team}`).classList.add('active');
+        };
+
+        // Função para adicionar membro
+        window.addMember = function() {
+            const name = document.getElementById('memberName').value.trim();
+            const phone = document.getElementById('memberPhone').value.trim();
+            const role = document.getElementById('memberRole').value;
+            
+            if (!name) {
+                alert('Por favor, digite o nome do membro!');
+                return;
             }
-        }
 
-        async function loadData() {
-            showLoading(true);
-            try {
-                const doc = await db.collection('gincana').doc('estado').get();
-                
-                if (doc.exists) {
-                    const data = doc.data();
-                    teams = JSON.parse(data.teams);
-                    pendingActions = JSON.parse(data.pendingActions);
-                    completedActions = JSON.parse(data.completedActions);
-                    currentRound = data.currentRound;
-                    roundCompleted = data.roundCompleted;
-                    
-                    currentRoundSpan.textContent = currentRound;
-                    nextRoundBtn.disabled = !roundCompleted;
-                    
-                    if (roundCompleted) {
-                        const celebrationDiv = document.createElement('div');
-                        celebrationDiv.className = 'celebration-message';
-                        celebrationDiv.id = 'celebrationMessage';
-                        celebrationDiv.innerHTML = '🎉 Parabéns! Todas as equipes concluíram a rodada! Clique em "Próxima Rodada" para continuar. 🎉';
-                        document.querySelector('.carousel-container').insertAdjacentElement('afterend', celebrationDiv);
-                    }
-                }
+            // Descobrir qual equipe está ativa
+            const activeTeam = document.querySelector('.team-tab.active').textContent.toLowerCase().includes('azul') ? 0 :
+                              document.querySelector('.team-tab.active').textContent.toLowerCase().includes('vermelha') ? 1 :
+                              document.querySelector('.team-tab.active').textContent.toLowerCase().includes('amarela') ? 2 : 3;
 
-                renderAll();
-            } catch (error) {
-                console.error('Erro ao carregar:', error);
-                showError('Erro ao carregar dados. Atualize a página.');
-            } finally {
-                showLoading(false);
+            const member = {
+                id: Date.now() + Math.random(),
+                name: name,
+                phone: phone || 'Não informado',
+                role: role
+            };
+
+            teams[activeTeam].members.push(member);
+            
+            // Limpar formulário
+            document.getElementById('memberName').value = '';
+            document.getElementById('memberPhone').value = '';
+            
+            renderMembers();
+            renderTeams(); // Atualizar contadores nos cards
+        };
+
+        // Função para remover membro
+        window.removeMember = function(teamId, memberId) {
+            if (confirm('Remover este membro da equipe?')) {
+                const team = teams.find(t => t.id === teamId);
+                team.members = team.members.filter(m => m.id !== memberId);
+                renderMembers();
+                renderTeams();
             }
+        };
+
+        // Renderizar listas de membros
+        function renderMembers() {
+            // Atualizar contadores
+            countAzul.textContent = teams[0].members.length;
+            countVermelha.textContent = teams[1].members.length;
+            countAmarela.textContent = teams[2].members.length;
+            countVerde.textContent = teams[3].members.length;
+
+            // Renderizar cada lista
+            renderMemberList(membersAzul, teams[0].members, teams[0].id);
+            renderMemberList(membersVermelha, teams[1].members, teams[1].id);
+            renderMemberList(membersAmarela, teams[2].members, teams[2].id);
+            renderMemberList(membersVerde, teams[3].members, teams[3].id);
         }
 
-        // ========== FUNÇÕES AUXILIARES ==========
-        function showLoading(show) {
-            loadingEl.style.display = show ? 'block' : 'none';
+        function renderMemberList(element, members, teamId) {
+            if (members.length === 0) {
+                element.innerHTML = '<div class="no-members">Nenhum membro cadastrado ainda.</div>';
+                return;
+            }
+
+            element.innerHTML = members.map(member => `
+                <div class="member-item">
+                    <div class="member-info">
+                        <span class="member-name">${member.name}</span>
+                        <span class="member-phone">📞 ${member.phone}</span>
+                        <span class="member-role">${member.role}</span>
+                    </div>
+                    <button class="remove-member-btn" onclick="removeMember(${teamId}, ${member.id})">Remover</button>
+                </div>
+            `).join('');
         }
 
-        function showError(message) {
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-            setTimeout(() => errorEl.style.display = 'none', 5000);
-        }
-
-        function updateDrawButton() {
-            const available = actions.filter(a => a.status === 'available').length;
-            drawBtn.disabled = !selectedTeamId || available === 0;
-        }
-
+        // Função para atualizar contadores (original)
         function updateCounters() {
-            availableCount.textContent = actions.filter(a => a.status === 'available').length;
-            pendingCount.textContent = pendingActions.length;
-            completedCount.textContent = completedActions.length;
+            const available = actions.filter(a => a.status === 'available').length;
+            const pending = pendingActions.length;
+            const completed = completedActions.length;
+            
+            availableCount.textContent = available;
+            pendingCount.textContent = pending;
+            completedCount.textContent = completed;
         }
 
+        // Função para verificar se todas as equipes concluíram a rodada
         function checkRoundCompletion() {
             const allTeamsCompleted = teams.every(team => team.completedThisRound);
             
@@ -1003,35 +1307,75 @@
                 celebrationDiv.id = 'celebrationMessage';
                 celebrationDiv.innerHTML = '🎉 Parabéns! Todas as equipes concluíram a rodada! Clique em "Próxima Rodada" para continuar. 🎉';
                 
-                document.querySelector('.carousel-container').insertAdjacentElement('afterend', celebrationDiv);
+                const carouselContainer = document.querySelector('.carousel-container');
+                carouselContainer.insertAdjacentElement('afterend', celebrationDiv);
+                
                 nextRoundBtn.disabled = false;
-                saveAllData();
             }
         }
 
+        // Função para avançar para próxima rodada
+        window.nextRound = function() {
+            if (!roundCompleted) {
+                alert('Ainda nem todas as equipes concluíram suas ações!');
+                return;
+            }
+            
+            const celebrationMsg = document.getElementById('celebrationMessage');
+            if (celebrationMsg) {
+                celebrationMsg.remove();
+            }
+            
+            currentRound++;
+            currentRoundSpan.textContent = currentRound;
+            roundCompleted = false;
+            nextRoundBtn.disabled = true;
+            
+            teams.forEach(team => {
+                team.currentActionId = null;
+                team.completedThisRound = false;
+                team.selected = false;
+            });
+            
+            actions.forEach(action => {
+                if (action.status === 'pending') {
+                    action.status = 'available';
+                    action.drawnBy = null;
+                } else if (action.status === 'completed') {
+                    action.status = 'available';
+                    action.drawnBy = null;
+                }
+            });
+            
+            pendingActions = [];
+            
+            selectedTeamId = null;
+            selectedAction.style.display = 'none';
+            drawBtn.disabled = true;
+            
+            renderTeams();
+            renderPendingActions();
+            renderCarousel();
+            updateCounters();
+            goToSlide(0);
+        };
+
+        // Função para tratar erro de imagem
         function handleImageError(img, actionName) {
             img.onerror = null;
             img.src = 'https://via.placeholder.com/800x400?text=' + encodeURIComponent(actionName);
         }
 
-        // ========== FUNÇÕES DE RENDERIZAÇÃO ==========
-        function renderAll() {
-            renderTeams();
-            renderCarousel();
-            renderPendingActions();
-            renderHistory();
-            updateCounters();
-            updateDrawButton();
-        }
-
+        // Renderizar equipes (modificado para mostrar contagem de membros)
         function renderTeams() {
             teamsSection.innerHTML = '';
             teams.forEach(team => {
                 const pendingCount = pendingActions.filter(p => p.teamId === team.id).length;
                 const currentAction = actions.find(a => a.id === team.currentActionId);
+                const memberCount = team.members.length;
                 
-                const card = document.createElement('div');
-                card.className = `team-card ${team.selected ? 'selected' : ''} ${team.completedThisRound ? 'completed-round' : ''}`;
+                const teamCard = document.createElement('div');
+                teamCard.className = `team-card ${team.selected ? 'selected' : ''} ${team.completedThisRound ? 'completed-round' : ''}`;
                 
                 let actionHtml = '';
                 if (team.completedThisRound) {
@@ -1040,20 +1384,57 @@
                     actionHtml = `<div class="current-action">🎯 Ação: ${currentAction.name}</div>`;
                 }
                 
-                card.innerHTML = `
+                teamCard.innerHTML = `
                     <h3>${team.name}</h3>
                     <div class="points">${team.points} pts</div>
+                    <div class="member-count">👥 ${memberCount} membro(s)</div>
                     ${actionHtml}
-                    ${pendingCount > 0 ? `<div class="pending-actions">⏳ ${pendingCount} pendente(s)</div>` : ''}
-                    <button onclick="window.selectTeam(${team.id})" ${team.selected || team.currentActionId || team.completedThisRound ? 'disabled' : ''}>
+                    ${pendingCount > 0 ? `<div class="pending-actions">⏳ ${pendingCount} ação(s) pendente(s)</div>` : ''}
+                    <button onclick="selectTeam(${team.id})" ${team.selected || team.currentActionId || team.completedThisRound ? 'disabled' : ''}>
                         ${team.selected ? 'Selecionado' : 'Selecionar'}
                     </button>
-                    ${pendingCount > 0 ? `<button class="view-btn" onclick="window.viewTeamPending(${team.id})">📸 Ver</button>` : ''}
+                    ${pendingCount > 0 ? `<button class="view-btn" onclick="viewTeamPending(${team.id})">📸 Ver Pendentes</button>` : ''}
                 `;
-                teamsSection.appendChild(card);
+                teamsSection.appendChild(teamCard);
             });
         }
 
+        // Selecionar equipe
+        window.selectTeam = function(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            
+            if (team.currentActionId) {
+                alert(`${team.name} já tem uma ação para cumprir nesta rodada!`);
+                return;
+            }
+            
+            if (team.completedThisRound) {
+                alert(`${team.name} já concluiu esta rodada!`);
+                return;
+            }
+            
+            if (selectedTeamId === teamId) {
+                selectedTeamId = null;
+                teams = teams.map(team => ({ ...team, selected: false }));
+                drawBtn.disabled = true;
+            } else {
+                selectedTeamId = teamId;
+                teams = teams.map(team => ({
+                    ...team,
+                    selected: team.id === teamId
+                }));
+                
+                const availableActions = actions.filter(a => a.status === 'available');
+                drawBtn.disabled = availableActions.length === 0;
+                
+                if (availableActions.length === 0) {
+                    alert('Não há ações disponíveis no momento!');
+                }
+            }
+            renderTeams();
+        };
+
+        // Renderizar carrossel
         function renderCarousel() {
             carousel.innerHTML = '';
             actions.forEach((action, index) => {
@@ -1067,16 +1448,19 @@
                 
                 const label = document.createElement('div');
                 label.className = 'action-label';
-                label.innerHTML = `<h3>${action.name}</h3><p>${action.description}</p>`;
+                label.innerHTML = `
+                    <h3>${action.name}</h3>
+                    <p>${action.description}</p>
+                `;
                 
-                const badge = document.createElement('div');
-                badge.className = `action-status-badge ${action.status}`;
-                badge.textContent = action.status === 'available' ? 'Disponível' :
-                                   action.status === 'pending' ? 'Pendente' : 'Concluída';
+                const statusBadge = document.createElement('div');
+                statusBadge.className = `action-status-badge ${action.status}`;
+                statusBadge.textContent = action.status === 'available' ? 'Disponível' :
+                                         action.status === 'pending' ? 'Pendente' : 'Concluída';
                 
                 item.appendChild(img);
                 item.appendChild(label);
-                item.appendChild(badge);
+                item.appendChild(statusBadge);
                 carousel.appendChild(item);
             });
 
@@ -1091,22 +1475,103 @@
             updateCarouselPosition();
         }
 
+        // Atualizar posição do carrossel
         function updateCarouselPosition() {
             carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
             document.querySelectorAll('.indicator').forEach((ind, index) => {
                 ind.className = `indicator ${index === currentIndex ? 'active' : ''} ${actions[index].status}`;
             });
         }
 
+        // Ir para slide específico
         function goToSlide(index) {
             currentIndex = index;
             updateCarouselPosition();
         }
 
+        // Próximo slide
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % actions.length;
+            updateCarouselPosition();
+        }
+
+        // Slide anterior
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + actions.length) % actions.length;
+            updateCarouselPosition();
+        }
+
+        // Sortear ação
+        window.drawAction = function() {
+            if (!selectedTeamId) {
+                alert('Selecione uma equipe primeiro!');
+                return;
+            }
+
+            const team = teams.find(t => t.id === selectedTeamId);
+            
+            if (team.currentActionId) {
+                alert(`${team.name} já tem uma ação para cumprir nesta rodada!`);
+                return;
+            }
+
+            if (team.completedThisRound) {
+                alert(`${team.name} já concluiu esta rodada!`);
+                return;
+            }
+
+            const availableActions = actions.filter(action => action.status === 'available');
+
+            if (availableActions.length === 0) {
+                alert('Não há ações disponíveis no momento!');
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableActions.length);
+            const drawnAction = availableActions[randomIndex];
+
+            drawnAction.status = 'pending';
+            drawnAction.drawnBy = team.id;
+            
+            team.currentActionId = drawnAction.id;
+            team.selected = false;
+            selectedTeamId = null;
+
+            const pendingAction = {
+                id: Date.now(),
+                teamId: team.id,
+                teamName: team.name,
+                actionId: drawnAction.id,
+                actionName: drawnAction.name,
+                actionDescription: drawnAction.description,
+                drawTime: new Date().toLocaleString(),
+                photos: [],
+                status: 'pending'
+            };
+
+            pendingActions.push(pendingAction);
+
+            selectedActionName.textContent = drawnAction.name;
+            selectedActionTeam.textContent = `Equipe: ${team.name}`;
+            selectedAction.style.display = 'block';
+
+            renderTeams();
+            renderPendingActions();
+            renderCarousel();
+            updateCounters();
+            drawBtn.disabled = true;
+
+            const actionIndex = actions.findIndex(a => a.id === drawnAction.id);
+            goToSlide(actionIndex);
+        };
+
+        // Renderizar ações pendentes
         function renderPendingActions() {
             pendingList.innerHTML = '';
+            
             if (pendingActions.length === 0) {
-                pendingList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação pendente.</p>';
+                pendingList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação pendente no momento.</p>';
                 return;
             }
 
@@ -1121,9 +1586,13 @@
                     </div>
                     <div class="upload-area" onclick="document.getElementById('file-${pending.id}').click()">
                         <input type="file" id="file-${pending.id}" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(${pending.id}, this.files)">
-                        <div class="upload-label">📸 Adicionar fotos</div>
+                        <div class="upload-label">
+                            📸 Clique para adicionar fotos/comprovantes
+                        </div>
                     </div>
-                    <div class="preview-area" id="preview-${pending.id}"></div>
+                    <div class="preview-area" id="preview-${pending.id}">
+                        <!-- Preview das imagens será inserido via JavaScript -->
+                    </div>
                     <div class="action-buttons">
                         <button class="approve-btn" onclick="approveAction(${pending.id})">✅ Aprovar</button>
                         <button class="reject-btn" onclick="rejectAction(${pending.id})">❌ Rejeitar</button>
@@ -1133,10 +1602,120 @@
             });
         }
 
+        // Upload de arquivos
+        window.handleFileUpload = function(pendingId, files) {
+            const pending = pendingActions.find(p => p.id === pendingId);
+            if (!pending) return;
+
+            const previewArea = document.getElementById(`preview-${pendingId}`);
+            previewArea.style.display = 'grid';
+            previewArea.innerHTML = '';
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    previewArea.appendChild(img);
+                    
+                    pending.photos.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        // Aprovar ação
+        window.approveAction = function(pendingId) {
+            const pendingIndex = pendingActions.findIndex(p => p.id === pendingId);
+            if (pendingIndex === -1) return;
+
+            const pending = pendingActions[pendingIndex];
+            
+            const team = teams.find(t => t.id === pending.teamId);
+            team.points += 10;
+            
+            team.completedThisRound = true;
+            team.currentActionId = null;
+            
+            const action = actions.find(a => a.id === pending.actionId);
+            action.status = 'completed';
+            action.completedInRound = currentRound;
+
+            const completed = {
+                ...pending,
+                completionTime: new Date().toLocaleString(),
+                status: 'completed',
+                round: currentRound
+            };
+            completedActions.unshift(completed);
+
+            pendingActions.splice(pendingIndex, 1);
+
+            renderTeams();
+            renderPendingActions();
+            renderHistory();
+            renderCarousel();
+            updateCounters();
+            
+            checkRoundCompletion();
+        };
+
+        // Rejeitar ação
+        window.rejectAction = function(pendingId) {
+            if (confirm('Tem certeza que deseja rejeitar esta ação? A ação voltará a ficar disponível para sorteio.')) {
+                const pendingIndex = pendingActions.findIndex(p => p.id === pendingId);
+                if (pendingIndex === -1) return;
+
+                const pending = pendingActions[pendingIndex];
+                
+                const action = actions.find(a => a.id === pending.actionId);
+                action.status = 'available';
+                action.drawnBy = null;
+                
+                const team = teams.find(t => t.id === pending.teamId);
+                team.currentActionId = null;
+
+                pendingActions.splice(pendingIndex, 1);
+
+                renderTeams();
+                renderPendingActions();
+                renderCarousel();
+                updateCounters();
+            }
+        };
+
+        // Visualizar ações pendentes de uma equipe
+        window.viewTeamPending = function(teamId) {
+            const teamPending = pendingActions.filter(p => p.teamId === teamId);
+            
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom: 20px;">Ações Pendentes - ${teams.find(t => t.id === teamId).name}</h3>
+                ${teamPending.map(pending => `
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                        <h4>${pending.actionName}</h4>
+                        <p>Sorteado: ${pending.drawTime}</p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                            ${pending.photos.map(photo => `<img src="${photo}" style="width: 100%;">`).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+                <button onclick="closeModal()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Fechar</button>
+            `;
+            
+            modal.style.display = 'flex';
+        };
+
+        // Fechar modal
+        window.closeModal = function() {
+            modal.style.display = 'none';
+        };
+
+        // Renderizar histórico
         function renderHistory() {
             historyList.innerHTML = '';
+            
             if (completedActions.length === 0) {
-                historyList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação concluída.</p>';
+                historyList.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma ação concluída ainda.</p>';
                 return;
             }
 
@@ -1154,286 +1733,98 @@
             });
         }
 
-        // ========== FUNÇÕES DE INTERAÇÃO ==========
-        window.selectTeam = function(teamId) {
-            const team = teams.find(t => t.id === teamId);
-            
-            if (team.currentActionId) {
-                alert(`${team.name} já tem uma ação!`);
-                return;
-            }
-            if (team.completedThisRound) {
-                alert(`${team.name} já concluiu a rodada!`);
-                return;
-            }
-            
-            if (selectedTeamId === teamId) {
-                selectedTeamId = null;
-                teams = teams.map(t => ({ ...t, selected: false }));
-                drawBtn.disabled = true;
-            } else {
-                selectedTeamId = teamId;
-                teams = teams.map(t => ({ ...t, selected: t.id === teamId }));
-                const available = actions.filter(a => a.status === 'available').length;
-                drawBtn.disabled = available === 0;
-            }
-            
-            renderTeams();
-        };
-
-        window.drawAction = async function() {
-            if (!selectedTeamId) {
-                alert('Selecione uma equipe!');
-                return;
-            }
-
-            const team = teams.find(t => t.id === selectedTeamId);
-            if (team.currentActionId || team.completedThisRound) {
-                alert('Equipe não disponível para sorteio!');
-                return;
-            }
-
-            const available = actions.filter(a => a.status === 'available');
-            if (available.length === 0) {
-                alert('Não há ações disponíveis!');
-                return;
-            }
-
-            const drawnAction = available[Math.floor(Math.random() * available.length)];
-            
-            drawnAction.status = 'pending';
-            drawnAction.drawnBy = team.id;
-            team.currentActionId = drawnAction.id;
-            team.selected = false;
-            selectedTeamId = null;
-
-            const pendingAction = {
-                id: Date.now(),
-                teamId: team.id,
-                teamName: team.name,
-                actionId: drawnAction.id,
-                actionName: drawnAction.name,
-                actionDescription: drawnAction.description,
-                drawTime: new Date().toLocaleString(),
-                photos: [],
-                status: 'pending'
-            };
-            pendingActions.push(pendingAction);
-
-            selectedActionName.textContent = drawnAction.name;
-            selectedActionTeam.textContent = `Equipe: ${team.name}`;
-            selectedAction.style.display = 'block';
-
-            renderAll();
-            goToSlide(actions.findIndex(a => a.id === drawnAction.id));
-            await saveAllData();
-        };
-
-        window.handleFileUpload = function(pendingId, files) {
-            const pending = pendingActions.find(p => p.id === pendingId);
-            if (!pending) return;
-
-            const previewArea = document.getElementById(`preview-${pendingId}`);
-            previewArea.style.display = 'grid';
-            previewArea.innerHTML = '';
-
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    previewArea.appendChild(img);
-                    pending.photos.push(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            });
-        };
-
-        window.approveAction = async function(pendingId) {
-            const index = pendingActions.findIndex(p => p.id === pendingId);
-            if (index === -1) return;
-
-            const pending = pendingActions[index];
-            const team = teams.find(t => t.id === pending.teamId);
-            const action = actions.find(a => a.id === pending.actionId);
-
-            team.points += 10;
-            team.completedThisRound = true;
-            team.currentActionId = null;
-            
-            action.status = 'completed';
-            action.completedInRound = currentRound;
-
-            const completed = {
-                ...pending,
-                completionTime: new Date().toLocaleString(),
-                status: 'completed',
-                round: currentRound
-            };
-            completedActions.unshift(completed);
-            pendingActions.splice(index, 1);
-
-            renderAll();
-            checkRoundCompletion();
-            await saveAllData();
-        };
-
-        window.rejectAction = async function(pendingId) {
-            if (!confirm('Rejeitar esta ação? Ela voltará para disponível.')) return;
-
-            const index = pendingActions.findIndex(p => p.id === pendingId);
-            if (index === -1) return;
-
-            const pending = pendingActions[index];
-            const team = teams.find(t => t.id === pending.teamId);
-            const action = actions.find(a => a.id === pending.actionId);
-
-            action.status = 'available';
-            action.drawnBy = null;
-            team.currentActionId = null;
-            pendingActions.splice(index, 1);
-
-            renderAll();
-            await saveAllData();
-        };
-
-        window.viewTeamPending = function(teamId) {
-            const teamPending = pendingActions.filter(p => p.teamId === teamId);
-            modalContent.innerHTML = `
-                <h3 style="margin-bottom:20px;">Pendentes - ${teams.find(t => t.id === teamId).name}</h3>
-                ${teamPending.map(p => `
-                    <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
-                        <h4>${p.actionName}</h4>
-                        <p>Sorteado: ${p.drawTime}</p>
-                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                            ${p.photos.map(photo => `<img src="${photo}" style="width:100%;">`).join('')}
-                        </div>
-                    </div>
-                `).join('')}
-                <button onclick="closeModal()" style="background:#667eea;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">Fechar</button>
-            `;
-            modal.style.display = 'flex';
-        };
-
-        window.closeModal = function() {
-            modal.style.display = 'none';
-        };
-
+        // Visualizar detalhes de ação concluída
         function viewCompletedDetails(item) {
             modalContent.innerHTML = `
-                <h3 style="margin-bottom:20px;">Detalhes da Ação Concluída</h3>
+                <h3 style="margin-bottom: 20px;">Detalhes da Ação Concluída</h3>
                 <p><strong>Equipe:</strong> ${item.teamName}</p>
                 <p><strong>Ação:</strong> ${item.actionName}</p>
                 <p><strong>Descrição:</strong> ${item.actionDescription}</p>
-                <p><strong>Sorteada:</strong> ${item.drawTime}</p>
-                <p><strong>Concluída:</strong> ${item.completionTime}</p>
+                <p><strong>Sorteada em:</strong> ${item.drawTime}</p>
+                <p><strong>Concluída em:</strong> ${item.completionTime}</p>
                 <p><strong>Rodada:</strong> ${item.round}</p>
-                <h4 style="margin:15px 0 10px;">Comprovantes:</h4>
-                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                    ${item.photos.map(photo => `<img src="${photo}" style="width:100%;">`).join('')}
+                <h4 style="margin: 15px 0 10px;">Comprovantes:</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    ${item.photos.map(photo => `<img src="${photo}" style="width: 100%;">`).join('')}
                 </div>
-                <button onclick="closeModal()" style="background:#667eea;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin-top:20px;">Fechar</button>
+                <button onclick="closeModal()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px;">Fechar</button>
             `;
             modal.style.display = 'flex';
         }
 
-        window.nextRound = async function() {
-            if (!roundCompleted) {
-                alert('Ainda nem todas as equipes concluíram!');
-                return;
+        // Reiniciar gincana
+        window.resetGame = function() {
+            if (confirm('Tem certeza que deseja reiniciar a gincana? Todo o progresso será perdido.')) {
+                actions.forEach(action => {
+                    action.status = 'available';
+                    action.drawnBy = null;
+                    action.completedInRound = null;
+                });
+                
+                teams = teams.map(team => ({
+                    ...team,
+                    points: 0,
+                    selected: false,
+                    currentActionId: null,
+                    completedThisRound: false,
+                    members: team.members // Manter membros cadastrados
+                }));
+                
+                pendingActions = [];
+                completedActions = [];
+                selectedTeamId = null;
+                currentRound = 1;
+                roundCompleted = false;
+                
+                selectedAction.style.display = 'none';
+                drawBtn.disabled = true;
+                nextRoundBtn.disabled = true;
+                currentRoundSpan.textContent = currentRound;
+                
+                const celebrationMsg = document.getElementById('celebrationMessage');
+                if (celebrationMsg) {
+                    celebrationMsg.remove();
+                }
+                
+                renderTeams();
+                renderPendingActions();
+                renderHistory();
+                renderCarousel();
+                updateCounters();
+                goToSlide(0);
             }
-
-            document.getElementById('celebrationMessage')?.remove();
-            
-            currentRound++;
-            currentRoundSpan.textContent = currentRound;
-            roundCompleted = false;
-            nextRoundBtn.disabled = true;
-
-            teams.forEach(t => {
-                t.currentActionId = null;
-                t.completedThisRound = false;
-                t.selected = false;
-            });
-
-            actions.forEach(a => {
-                a.status = 'available';
-                a.drawnBy = null;
-            });
-
-            pendingActions = [];
-            selectedTeamId = null;
-            selectedAction.style.display = 'none';
-
-            renderAll();
-            goToSlide(0);
-            await saveAllData();
         };
 
-        window.resetGame = async function() {
-            if (!confirm('Reiniciar gincana? Todo progresso será perdido.')) return;
-
-            actions.forEach(a => {
-                a.status = 'available';
-                a.drawnBy = null;
-                a.completedInRound = null;
-            });
-
-            teams = teams.map(t => ({
-                ...t,
-                points: 0,
-                selected: false,
-                currentActionId: null,
-                completedThisRound: false
-            }));
-
-            pendingActions = [];
-            completedActions = [];
-            selectedTeamId = null;
-            currentRound = 1;
-            roundCompleted = false;
-            selectedAction.style.display = 'none';
-            nextRoundBtn.disabled = true;
-            currentRoundSpan.textContent = '1';
-
-            document.getElementById('celebrationMessage')?.remove();
-
-            renderAll();
-            goToSlide(0);
-            await saveAllData();
-        };
-
-        // ========== EVENT LISTENERS ==========
-        prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + actions.length) % actions.length;
-            updateCarouselPosition();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % actions.length;
-            updateCarouselPosition();
-        });
-
+        // Event listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
         drawBtn.addEventListener('click', drawAction);
         resetBtn.addEventListener('click', resetGame);
         nextRoundBtn.addEventListener('click', nextRound);
 
-        window.onclick = (event) => {
-            if (event.target === modal) modal.style.display = 'none';
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
         };
 
+        // Inicializar
+        renderTeams();
+        renderCarousel();
+        renderPendingActions();
+        renderHistory();
+        updateCounters();
+        renderMembers();
+
+        // Teclas de seta para navegação do carrossel
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + actions.length) % actions.length;
-                updateCarouselPosition();
+                prevSlide();
             } else if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % actions.length;
-                updateCarouselPosition();
+                nextSlide();
             }
         });
-
-        // ========== INICIALIZAÇÃO ==========
-        loadData();
     </script>
 </body>
 </html>
