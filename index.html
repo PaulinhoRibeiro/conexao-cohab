@@ -1026,138 +1026,40 @@
     </div>
 
     <script>
-        // Dados das ações
+        // ========== DADOS DAS AÇÕES ==========
         const actions = [
-            {
-                id: 1,
-                name: "Amando o pródigo",
-                description: "Visita um antigo membro da igreja que está afastado.",
-                image: "img/acao1.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 2,
-                name: "Ajuda urbana",
-                description: "Proporcionar uma refeição para necessitados.",
-                image: "img/acao2.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 3,
-                name: "Mãos que consolam",
-                description: "Dar atenção e carinho a alguém que esteja vulnerável.",
-                image: "img/acao3.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 4,
-                name: "Primavera Eterna",
-                description: "Promover uma ação para pessoas da melhor idade.",
-                image: "img/acao4.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 5,
-                name: "Projeto Naamã",
-                description: "Realizar atividades com pessoas doentes",
-                image: "img/acao5.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 6,
-                name: "Tons que curam",
-                description: "Realizar uma atividade musical pública.",
-                image: "img/acao6.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 7,
-                name: "Berço da Esperança",
-                description: "Realizar uma atividade de apoio para grávidas ou mães.",
-                image: "img/acao7.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 8,
-                name: "Gol de esperança",
-                description: "Realizar uma atividade esportiva para a comunidade.",
-                image: "img/acao8.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 9,
-                name: "Adote uma praça",
-                description: "Realizar uma ação social de limpeza de uma praça.",
-                image: "img/acao9.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 10,
-                name: "Mãos que servem.",
-                description: "Realizar atividades em uma casa que precise.",
-                image: "img/acao10.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 11,
-                name: "Brechó Solidário",
-                description: "Organizar uma ação de arrecadação e doação de roupas e acessórios.",
-                image: "img/acao11.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            },
-            {
-                id: 12,
-                name: "Estação da Paz",
-                description: "Realizar uma tenda com momentos de louvor e oração em uma praça pública",
-                image: "img/acao12.png",
-                status: 'available',
-                drawnBy: null,
-                completedInRound: null
-            }
+            { id: 1, name: "Amando o pródigo", description: "Visita um antigo membro da igreja que está afastado.", image: "img/acao1.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 2, name: "Ajuda urbana", description: "Proporcionar uma refeição para necessitados.", image: "img/acao2.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 3, name: "Mãos que consolam", description: "Dar atenção e carinho a alguém que esteja vulnerável.", image: "img/acao3.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 4, name: "Primavera Eterna", description: "Promover uma ação para pessoas da melhor idade.", image: "img/acao4.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 5, name: "Projeto Naamã", description: "Realizar atividades com pessoas doentes", image: "img/acao5.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 6, name: "Tons que curam", description: "Realizar uma atividade musical pública.", image: "img/acao6.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 7, name: "Berço da Esperança", description: "Realizar uma atividade de apoio para grávidas ou mães.", image: "img/acao7.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 8, name: "Gol de esperança", description: "Realizar uma atividade esportiva para a comunidade.", image: "img/acao8.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 9, name: "Adote uma praça", description: "Realizar uma ação social de limpeza de uma praça.", image: "img/acao9.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 10, name: "Mãos que servem.", description: "Realizar atividades em uma casa que precise.", image: "img/acao10.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 11, name: "Brechó Solidário", description: "Organizar uma ação de arrecadação e doação de roupas e acessórios.", image: "img/acao11.png", status: 'available', drawnBy: null, completedInRound: null },
+            { id: 12, name: "Estação da Paz", description: "Realizar uma tenda com momentos de louvor e oração em uma praça pública", image: "img/acao12.png", status: 'available', drawnBy: null, completedInRound: null }
         ];
 
-        // Dados das equipes com membros
-        let teams = [
+        // ========== DADOS INICIAIS ==========
+        const initialTeams = [
             { id: 1, name: "Equipe Azul", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
             { id: 2, name: "Equipe Vermelha", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
             { id: 3, name: "Equipe Amarela", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] },
             { id: 4, name: "Equipe Verde", points: 0, selected: false, currentActionId: null, completedThisRound: false, members: [] }
         ];
 
-        // Ações pendentes
+        // ========== VARIÁVEIS GLOBAIS ==========
+        let teams = JSON.parse(JSON.stringify(initialTeams));
         let pendingActions = [];
-        
-        // Histórico de ações concluídas
         let completedActions = [];
-
         let currentIndex = 0;
         let selectedTeamId = null;
         let currentRound = 1;
         let roundCompleted = false;
 
-        // Elementos DOM
+        // ========== ELEMENTOS DOM ==========
         const teamsSection = document.getElementById('teamsSection');
         const carousel = document.getElementById('carousel');
         const indicators = document.getElementById('indicators');
@@ -1177,8 +1079,6 @@
         const completedCount = document.getElementById('completedCount');
         const currentRoundSpan = document.getElementById('currentRound');
         const nextRoundBtn = document.getElementById('nextRoundBtn');
-
-        // Elementos dos membros
         const countAzul = document.getElementById('countAzul');
         const countVermelha = document.getElementById('countVermelha');
         const countAmarela = document.getElementById('countAmarela');
@@ -1188,27 +1088,59 @@
         const membersAmarela = document.getElementById('membersAmarela');
         const membersVerde = document.getElementById('membersVerde');
 
-        // Função para alternar abas principais
+        // ========== FUNÇÕES DE PERSISTÊNCIA ==========
+        function salvarDados() {
+            const dados = {
+                teams: teams,
+                pendingActions: pendingActions,
+                completedActions: completedActions,
+                currentRound: currentRound,
+                roundCompleted: roundCompleted
+            };
+            localStorage.setItem('gincanaCohab', JSON.stringify(dados));
+            console.log('✅ Dados salvos com sucesso!');
+        }
+
+        function carregarDados() {
+            const dadosSalvos = localStorage.getItem('gincanaCohab');
+            if (dadosSalvos) {
+                try {
+                    const dados = JSON.parse(dadosSalvos);
+                    teams = dados.teams || JSON.parse(JSON.stringify(initialTeams));
+                    pendingActions = dados.pendingActions || [];
+                    completedActions = dados.completedActions || [];
+                    currentRound = dados.currentRound || 1;
+                    roundCompleted = dados.roundCompleted || false;
+                    
+                    currentRoundSpan.textContent = currentRound;
+                    nextRoundBtn.disabled = !roundCompleted;
+                    
+                    console.log('✅ Dados carregados com sucesso!');
+                    return true;
+                } catch (e) {
+                    console.error('Erro ao carregar dados:', e);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // ========== FUNÇÕES DE INTERFACE ==========
         window.showTab = function(tabName) {
-            // Atualizar botões
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Atualizar conteúdo
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(`tab-${tabName}`).classList.add('active');
         };
 
-        // Função para alternar entre equipes na aba de membros
         window.showTeam = function(team) {
             document.querySelectorAll('.team-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.team-members').forEach(content => content.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(`team-${team}`).classList.add('active');
         };
 
-        // Função para adicionar membro
+        // ========== FUNÇÕES DE MEMBROS ==========
         window.addMember = function() {
             const name = document.getElementById('memberName').value.trim();
             const phone = document.getElementById('memberPhone').value.trim();
@@ -1219,10 +1151,11 @@
                 return;
             }
 
-            // Descobrir qual equipe está ativa
-            const activeTeam = document.querySelector('.team-tab.active').textContent.toLowerCase().includes('azul') ? 0 :
-                              document.querySelector('.team-tab.active').textContent.toLowerCase().includes('vermelha') ? 1 :
-                              document.querySelector('.team-tab.active').textContent.toLowerCase().includes('amarela') ? 2 : 3;
+            const activeTab = document.querySelector('.team-tab.active');
+            let activeTeam = 0;
+            if (activeTab.textContent.includes('Vermelha')) activeTeam = 1;
+            else if (activeTab.textContent.includes('Amarela')) activeTeam = 2;
+            else if (activeTab.textContent.includes('Verde')) activeTeam = 3;
 
             const member = {
                 id: Date.now() + Math.random(),
@@ -1233,33 +1166,31 @@
 
             teams[activeTeam].members.push(member);
             
-            // Limpar formulário
             document.getElementById('memberName').value = '';
             document.getElementById('memberPhone').value = '';
             
             renderMembers();
-            renderTeams(); // Atualizar contadores nos cards
+            renderTeams();
+            salvarDados();
+            alert('✅ Membro adicionado com sucesso!');
         };
 
-        // Função para remover membro
         window.removeMember = function(teamId, memberId) {
             if (confirm('Remover este membro da equipe?')) {
                 const team = teams.find(t => t.id === teamId);
                 team.members = team.members.filter(m => m.id !== memberId);
                 renderMembers();
                 renderTeams();
+                salvarDados();
             }
         };
 
-        // Renderizar listas de membros
         function renderMembers() {
-            // Atualizar contadores
             countAzul.textContent = teams[0].members.length;
             countVermelha.textContent = teams[1].members.length;
             countAmarela.textContent = teams[2].members.length;
             countVerde.textContent = teams[3].members.length;
 
-            // Renderizar cada lista
             renderMemberList(membersAzul, teams[0].members, teams[0].id);
             renderMemberList(membersVermelha, teams[1].members, teams[1].id);
             renderMemberList(membersAmarela, teams[2].members, teams[2].id);
@@ -1284,18 +1215,13 @@
             `).join('');
         }
 
-        // Função para atualizar contadores (original)
+        // ========== FUNÇÕES DA GINCANA ==========
         function updateCounters() {
-            const available = actions.filter(a => a.status === 'available').length;
-            const pending = pendingActions.length;
-            const completed = completedActions.length;
-            
-            availableCount.textContent = available;
-            pendingCount.textContent = pending;
-            completedCount.textContent = completed;
+            availableCount.textContent = actions.filter(a => a.status === 'available').length;
+            pendingCount.textContent = pendingActions.length;
+            completedCount.textContent = completedActions.length;
         }
 
-        // Função para verificar se todas as equipes concluíram a rodada
         function checkRoundCompletion() {
             const allTeamsCompleted = teams.every(team => team.completedThisRound);
             
@@ -1307,24 +1233,20 @@
                 celebrationDiv.id = 'celebrationMessage';
                 celebrationDiv.innerHTML = '🎉 Parabéns! Todas as equipes concluíram a rodada! Clique em "Próxima Rodada" para continuar. 🎉';
                 
-                const carouselContainer = document.querySelector('.carousel-container');
-                carouselContainer.insertAdjacentElement('afterend', celebrationDiv);
+                document.querySelector('.carousel-container').insertAdjacentElement('afterend', celebrationDiv);
                 
                 nextRoundBtn.disabled = false;
+                salvarDados();
             }
         }
 
-        // Função para avançar para próxima rodada
         window.nextRound = function() {
             if (!roundCompleted) {
                 alert('Ainda nem todas as equipes concluíram suas ações!');
                 return;
             }
             
-            const celebrationMsg = document.getElementById('celebrationMessage');
-            if (celebrationMsg) {
-                celebrationMsg.remove();
-            }
+            document.getElementById('celebrationMessage')?.remove();
             
             currentRound++;
             currentRoundSpan.textContent = currentRound;
@@ -1338,35 +1260,29 @@
             });
             
             actions.forEach(action => {
-                if (action.status === 'pending') {
-                    action.status = 'available';
-                    action.drawnBy = null;
-                } else if (action.status === 'completed') {
+                if (action.status === 'pending' || action.status === 'completed') {
                     action.status = 'available';
                     action.drawnBy = null;
                 }
             });
             
             pendingActions = [];
-            
             selectedTeamId = null;
             selectedAction.style.display = 'none';
-            drawBtn.disabled = true;
             
             renderTeams();
             renderPendingActions();
             renderCarousel();
             updateCounters();
             goToSlide(0);
+            salvarDados();
         };
 
-        // Função para tratar erro de imagem
         function handleImageError(img, actionName) {
             img.onerror = null;
             img.src = 'https://via.placeholder.com/800x400?text=' + encodeURIComponent(actionName);
         }
 
-        // Renderizar equipes (modificado para mostrar contagem de membros)
         function renderTeams() {
             teamsSection.innerHTML = '';
             teams.forEach(team => {
@@ -1399,7 +1315,6 @@
             });
         }
 
-        // Selecionar equipe
         window.selectTeam = function(teamId) {
             const team = teams.find(t => t.id === teamId);
             
@@ -1434,7 +1349,6 @@
             renderTeams();
         };
 
-        // Renderizar carrossel
         function renderCarousel() {
             carousel.innerHTML = '';
             actions.forEach((action, index) => {
@@ -1448,10 +1362,7 @@
                 
                 const label = document.createElement('div');
                 label.className = 'action-label';
-                label.innerHTML = `
-                    <h3>${action.name}</h3>
-                    <p>${action.description}</p>
-                `;
+                label.innerHTML = `<h3>${action.name}</h3><p>${action.description}</p>`;
                 
                 const statusBadge = document.createElement('div');
                 statusBadge.className = `action-status-badge ${action.status}`;
@@ -1475,34 +1386,28 @@
             updateCarouselPosition();
         }
 
-        // Atualizar posição do carrossel
         function updateCarouselPosition() {
             carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-            
             document.querySelectorAll('.indicator').forEach((ind, index) => {
                 ind.className = `indicator ${index === currentIndex ? 'active' : ''} ${actions[index].status}`;
             });
         }
 
-        // Ir para slide específico
         function goToSlide(index) {
             currentIndex = index;
             updateCarouselPosition();
         }
 
-        // Próximo slide
         function nextSlide() {
             currentIndex = (currentIndex + 1) % actions.length;
             updateCarouselPosition();
         }
 
-        // Slide anterior
         function prevSlide() {
             currentIndex = (currentIndex - 1 + actions.length) % actions.length;
             updateCarouselPosition();
         }
 
-        // Sortear ação
         window.drawAction = function() {
             if (!selectedTeamId) {
                 alert('Selecione uma equipe primeiro!');
@@ -1564,9 +1469,9 @@
 
             const actionIndex = actions.findIndex(a => a.id === drawnAction.id);
             goToSlide(actionIndex);
+            salvarDados();
         };
 
-        // Renderizar ações pendentes
         function renderPendingActions() {
             pendingList.innerHTML = '';
             
@@ -1586,13 +1491,9 @@
                     </div>
                     <div class="upload-area" onclick="document.getElementById('file-${pending.id}').click()">
                         <input type="file" id="file-${pending.id}" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(${pending.id}, this.files)">
-                        <div class="upload-label">
-                            📸 Clique para adicionar fotos/comprovantes
-                        </div>
+                        <div class="upload-label">📸 Clique para adicionar fotos/comprovantes</div>
                     </div>
-                    <div class="preview-area" id="preview-${pending.id}">
-                        <!-- Preview das imagens será inserido via JavaScript -->
-                    </div>
+                    <div class="preview-area" id="preview-${pending.id}"></div>
                     <div class="action-buttons">
                         <button class="approve-btn" onclick="approveAction(${pending.id})">✅ Aprovar</button>
                         <button class="reject-btn" onclick="rejectAction(${pending.id})">❌ Rejeitar</button>
@@ -1602,7 +1503,6 @@
             });
         }
 
-        // Upload de arquivos
         window.handleFileUpload = function(pendingId, files) {
             const pending = pendingActions.find(p => p.id === pendingId);
             if (!pending) return;
@@ -1617,14 +1517,13 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     previewArea.appendChild(img);
-                    
                     pending.photos.push(e.target.result);
+                    salvarDados();
                 };
                 reader.readAsDataURL(file);
             });
         };
 
-        // Aprovar ação
         window.approveAction = function(pendingId) {
             const pendingIndex = pendingActions.findIndex(p => p.id === pendingId);
             if (pendingIndex === -1) return;
@@ -1633,7 +1532,6 @@
             
             const team = teams.find(t => t.id === pending.teamId);
             team.points += 10;
-            
             team.completedThisRound = true;
             team.currentActionId = null;
             
@@ -1648,7 +1546,6 @@
                 round: currentRound
             };
             completedActions.unshift(completed);
-
             pendingActions.splice(pendingIndex, 1);
 
             renderTeams();
@@ -1658,9 +1555,9 @@
             updateCounters();
             
             checkRoundCompletion();
+            salvarDados();
         };
 
-        // Rejeitar ação
         window.rejectAction = function(pendingId) {
             if (confirm('Tem certeza que deseja rejeitar esta ação? A ação voltará a ficar disponível para sorteio.')) {
                 const pendingIndex = pendingActions.findIndex(p => p.id === pendingId);
@@ -1681,10 +1578,10 @@
                 renderPendingActions();
                 renderCarousel();
                 updateCounters();
+                salvarDados();
             }
         };
 
-        // Visualizar ações pendentes de uma equipe
         window.viewTeamPending = function(teamId) {
             const teamPending = pendingActions.filter(p => p.teamId === teamId);
             
@@ -1701,16 +1598,13 @@
                 `).join('')}
                 <button onclick="closeModal()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Fechar</button>
             `;
-            
             modal.style.display = 'flex';
         };
 
-        // Fechar modal
         window.closeModal = function() {
             modal.style.display = 'none';
         };
 
-        // Renderizar histórico
         function renderHistory() {
             historyList.innerHTML = '';
             
@@ -1733,7 +1627,6 @@
             });
         }
 
-        // Visualizar detalhes de ação concluída
         function viewCompletedDetails(item) {
             modalContent.innerHTML = `
                 <h3 style="margin-bottom: 20px;">Detalhes da Ação Concluída</h3>
@@ -1752,7 +1645,6 @@
             modal.style.display = 'flex';
         }
 
-        // Reiniciar gincana
         window.resetGame = function() {
             if (confirm('Tem certeza que deseja reiniciar a gincana? Todo o progresso será perdido.')) {
                 actions.forEach(action => {
@@ -1767,7 +1659,7 @@
                     selected: false,
                     currentActionId: null,
                     completedThisRound: false,
-                    members: team.members // Manter membros cadastrados
+                    members: team.members
                 }));
                 
                 pendingActions = [];
@@ -1781,50 +1673,56 @@
                 nextRoundBtn.disabled = true;
                 currentRoundSpan.textContent = currentRound;
                 
-                const celebrationMsg = document.getElementById('celebrationMessage');
-                if (celebrationMsg) {
-                    celebrationMsg.remove();
-                }
+                document.getElementById('celebrationMessage')?.remove();
                 
                 renderTeams();
                 renderPendingActions();
                 renderHistory();
                 renderCarousel();
                 updateCounters();
+                renderMembers();
                 goToSlide(0);
+                salvarDados();
             }
         };
 
-        // Event listeners
+        // ========== EVENT LISTENERS ==========
         prevBtn.addEventListener('click', prevSlide);
         nextBtn.addEventListener('click', nextSlide);
         drawBtn.addEventListener('click', drawAction);
         resetBtn.addEventListener('click', resetGame);
         nextRoundBtn.addEventListener('click', nextRound);
 
-        // Fechar modal ao clicar fora
         window.onclick = function(event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
         };
 
-        // Inicializar
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            else if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // ========== INICIALIZAÇÃO ==========
+        const dadosCarregados = carregarDados();
+        
+        if (!dadosCarregados) {
+            teams = JSON.parse(JSON.stringify(initialTeams));
+            pendingActions = [];
+            completedActions = [];
+            currentRound = 1;
+            roundCompleted = false;
+            currentRoundSpan.textContent = currentRound;
+            nextRoundBtn.disabled = true;
+        }
+
         renderTeams();
         renderCarousel();
         renderPendingActions();
         renderHistory();
         updateCounters();
         renderMembers();
-
-        // Teclas de seta para navegação do carrossel
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                prevSlide();
-            } else if (e.key === 'ArrowRight') {
-                nextSlide();
-            }
-        });
     </script>
 </body>
 </html>
